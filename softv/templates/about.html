@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+<div class="container mt-4">
+    <!-- About Us Section -->
+    <section id="about-us" class="mb-5">
+        <div class="row align-items-center">
+            <!-- Left Image -->
+            <div class="col-md-6">
+                <img src="https://m.media-amazon.com/images/I/71rFlqSQ5NL._SL1500_.jpg" class="img-fluid" alt="About Us Image">
+            </div>
+            <!-- Right Text -->
+            <div class="col-md-6">
+                <h1 class="mb-4">About Us</h1>
+                <p>
+                    Welcome to <strong> {{ company }}</strong>, where shopping meets convenience, and quality is never compromised. 
+                    Since our inception in {{ year }}, we’ve been committed to providing a seamless shopping experience to customers all around the world.
+                    Whether you're looking for the latest fashion trends, cutting-edge gadgets, or home essentials, you’ll find everything you need right here in one place.
+                </p>
+                <p>
+                    Our mission is simple: to make online shopping easy, accessible, and enjoyable for everyone. We aim to provide products that cater to every need and desire, 
+                    while ensuring that our customers experience the highest level of satisfaction at every step.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add Product Form Section -->
+    <section id="add-product" class="mt-5">
+        <h2 class="text-center mb-4">Add a Product</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Add Product</button>
+        </form>
+    </section>
+
+    <!-- Custom Notification -->
+    <div id="customNotification" class="notification" style="display: none;">
+        <div class="notification-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <p id="notificationMessage"></p>
+    </div>
+</div>
+
+<!-- Notification Styles -->
+<style>
+    .notification {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #fff;
+        color: #333;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transform: translateY(100%) translateX(-50%);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        z-index: 1050;
+        display: flex;
+        align-items: center;
+    }
+    .notification.show {
+        opacity: 1;
+        transform: translateY(0) translateX(-50%);
+    }
+    .notification-icon {
+        background-color: #4caf50;
+        color: white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+    }
+    .notification-icon i {
+        font-size: 20px;
+    }
+</style>
+
+<!-- Notification Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Show notification if success flag is set
+    window.onload = function() {
+        const success = "{{ success|yesno:'true,false' }}";
+        if (success === "true") {
+            const notification = document.getElementById('customNotification');
+            const notificationMessage = document.getElementById('notificationMessage');
+            notificationMessage.textContent = "Product added successfully!";
+            notification.style.display = "flex"; // Show notification
+            notification.classList.add('show');
+
+            // Automatically hide the notification after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                notification.style.display = "none";
+            }, 3000);
+        }
+    }
+</script>
+
+{% endblock body %}

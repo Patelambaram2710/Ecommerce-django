@@ -1,0 +1,212 @@
+/* Navbar styles */
+.navbar-custom {
+    background-color: #343a40;
+    /* Dark background color */
+    transition: background-color 0.3s ease;
+    /* Smooth background color transition */
+}
+
+.navbar-custom:hover {
+    background-color: #495057;
+    /* Slightly lighter on hover */
+}
+
+.badge {
+    background-color: #dc3545;
+    /* Adjust color as needed */
+}
+
+.navbar-nav .nav-link {
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffc107;
+    /* Highlight color on hover */
+}
+
+/* Card styles */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 10px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+    border-radius: 10px 10px 0 0;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-body {
+    background-color: #f8f9fa;
+    /* Light background color for card body */
+    padding: 1.25rem;
+    border-radius: 0 0 10px 10px;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.card-text {
+    color: #555;
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.navbar-nav .nav-link,
+.navbar-nav .nav-link i {
+    color: white !important;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link i:hover {
+    color: lightgray !important;
+}
+
+/* Styling for the search icon */
+.search-form button {
+    background: none;
+    border: none;
+    color: white;
+}
+
+.search-form button:hover {
+    color: lightgray;
+}
+
+.navbar-nav .nav-item {
+    display: inline-block;
+    margin-right: 15px;
+    /* Adjust spacing as needed */
+}
+
+.navbar-nav .nav-link {
+    padding: 8px 10px;
+    white-space: nowrap;
+}
+
+#cart-count {
+    position: relative;
+    top: -10px;
+    right: 10px;
+    font-size: 0.75rem;
+    padding: 0.25em 0.5em;
+    border-radius: 50%;
+}
+.liked-button {
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    background: none;
+    border: none;
+}
+.liked-button i {
+    font-size: 24px;
+    color: #ccc;
+}
+.liked-button i.text-danger {
+    color: red;
+}
+.notification {
+    position: fixed;
+    bottom: 20px; /* Position from the bottom */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Center horizontally */
+    background-color: #fff;
+    color: #333;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateY(100%) translateX(-50%);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    z-index: 1050; /* Make sure it appears above other content */
+    display: flex;
+    align-items: center;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0) translateX(-50%);
+}
+
+.notification-icon {
+    background-color: #4caf50; /* Green background */
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+.notification-icon i {
+    font-size: 20px;
+}
+.category-image {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+    border-radius: 15px;
+}
+
+.category-image img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease-in-out;
+}
+
+.category-image:hover img {
+    transform: scale(1.1);
+}
+
+.category-image:hover {
+    transform: scale(1.05);
+}
+
+.category-image .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+}
+
+.category-image:hover .overlay {
+    opacity: 1;
+}
+
+.overlay-text {
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+}

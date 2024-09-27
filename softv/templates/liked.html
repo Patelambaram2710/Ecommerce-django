@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+<div class="container mt-4">
+    <h1 class="text-center mb-5">Your Favourites</h1>
+    <div class="row" id="favourites-list">
+        {% if liked_items %}
+            {% for item in liked_items %}
+            <div class="col-md-4 mb-4">
+                <!-- Link wrapping the entire card -->
+                <a href="{% url 'product_detail' item.product.id %}" class="text-decoration-none text-dark">
+                    <div class="card h-100 shadow-sm border-0 position-relative">
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image }}" class="card-img-top" alt="{{ item.product.name }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="No Image Available">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{{ item.product.name }}</h5>
+                            <p class="card-text">
+                                <strong>Company:</strong> {{ item.product.company_name }}<br>
+                                <strong>Quantity:</strong> {{ item.quantity }}<br>
+                                <strong>Price:</strong> ${{ item.product.price }}<br>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+                <!-- Heart-shaped 'Remove from Liked' button -->
+                <form id="remove-form-{{ item.id }}" action="{% url 'remove_from_liked' item.id %}" method="post" class="position-absolute heart-button">
+                    {% csrf_token %}
+                    <button type="button" class="btn liked-button" onclick="handleRemoveClick(event, '{{ item.product.name }}', '{{ item.id }}')">
+                        <i class="fas fa-heart text-danger"></i>
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center">
+                <p>No favourites found.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Custom Notification -->
+<div id="customNotification" class="notification">
+    <div class="notification-icon">
+        <i class="fas fa-check"></i>
+    </div>
+    <p id="notificationMessage"></p>
+</div>
+
+ <style>
+    .liked-button {
+        background: none;
+        border: none;
+        padding: 0;
+    }
+    .liked-button i {
+        font-size: 24px;
+        color: #ccc;
+    }
+    .liked-button i.text-danger {
+        color: red;
+    }
+    
+    .liked-button {
+        position: absolute;
+        top: 10px;
+        right: 0px;
+        
+    }
+    .notification {
+         position: fixed; 
+        bottom: 20px; /* Position from the bottom */
+        left: 50%; /* Center horizontally */
+        transform: translateX(-50%); /* Center horizontally */
+        background-color: #fff;
+        color: #333;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transform: translateY(100%) translateX(-50%);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        z-index: 1050; /* Make sure it appears above other content */
+        display: flex;
+        align-items: center;
+    }
+    .notification.show {
+        opacity: 1;
+        transform: translateY(0) translateX(-50%);
+    }
+    .notification-icon {
+        background-color: #4caf50; /* Green background */
+        color: white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+    }
+    .notification-icon i {
+        font-size: 20px;
+    }
+</style> 
+
+<!-- Include necessary JS files -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let formToSubmit = null;
+
+    function handleRemoveClick(event, productName, itemId) {
+        event.preventDefault(); // Prevent the default form submission
+        formToSubmit = document.getElementById(`remove-form-${itemId}`);
+        const notification = document.getElementById('customNotification');
+        const notificationMessage = document.getElementById('notificationMessage');
+        notificationMessage.textContent = `Product "${productName}" removed from your favourites.`;
+        notification.classList.add('show');
+
+        // Automatically hide the notification after 1 second
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 1000);
+
+        // Submit the form after hiding the notification
+        setTimeout(() => {
+            if (formToSubmit) {
+                formToSubmit.submit(); // Submit the form after the notification hides
+            }
+        }, 1000);
+    }
+</script>
+
+{% endblock body %}

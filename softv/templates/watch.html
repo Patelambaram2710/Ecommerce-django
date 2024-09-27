@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block body %}
+{% load static %}
+<div class="container mt-4">
+    <h1 class="text-center mb-5">Watch Products</h1>
+    <form method="get" action="{% url 'watch' %}">
+        <div class="row">
+            <div class="col-md-3">
+                <label for="min_price">Min Price</label>
+                <input type="number" name="min_price" id="min_price" class="form-control" placeholder="₹" >
+            </div>
+            <div class="col-md-3">
+                <label for="max_price">Max Price</label>
+                <input type="number" name="max_price" id="max_price" class="form-control" placeholder="₹" >
+            </div>
+            <div class="col-md-2">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-primary w-100">Apply Filter</button>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        {% for product in products %}
+            {% if product.category.name == 'watch' %}
+                <div class="col-md-4 mb-4">
+                    <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                        <div class="card h-100 shadow-sm border-0">
+                            {% if product.image %}
+                                <img src="{{ product.image }}" class="card-img-top" alt="{{ product.name }}">
+                            {% comment %} {% else %}
+                                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="No Image Available"> {% endcomment %}
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title text-center">{{ product.name }}</h5>
+                                <p class="card-text text-muted text-center">{{ product.category.name }}</p>
+                                <p class="card-text">
+                                    <strong>Company:</strong> {{ product.company_name }}<br>
+                                    <strong>Quantity:</strong> {{ product.quantity }}<br>
+                                    <strong>Price:</strong> ₹{{ product.price }}<br>
+                                    {% comment %} <strong>Description:</strong> {{ product.desc }} {% endcomment %}
+                                </p>
+                                <hr>
+                                <div class="text-center">
+                                    <form action="{% url 'add_to_cart' product.id %}" method="post" class="cart-form">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary btn-sm" onclick="showNotification('Cart', '{{ product.name }}', event)">Add to Cart</button>
+                                    </form>
+                                    <form action="{% url 'add_to_liked' product.id %}" method="post" class="liked-form">
+                                        {% csrf_token %}
+                                        <button type="submit" class="liked-button" onclick="showNotification('Favorite', '{{ product.name }}', event)">
+                                            <i class="fas fa-heart {% if product.id in liked_product_ids %}text-danger{% endif %}"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock body %}

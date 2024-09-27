@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Out of Stock Notification</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link  rel="stylesheet" href='out_of_stock.css'>
+    
+</head>
+<body>
+
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h2>Out of Stock Notification</h2>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <p>Dear Admin,</p>
+            <p>The following products are currently out of stock:</p>
+            <ul>
+                {% for product in products %}
+                <li>
+                    <strong>Product Name:</strong> {{ product.name }}<br>
+                    <strong>Product ID:</strong> {{ product.id }}<br>
+                    <strong>Current Quantity:</strong> {{ product.quantity }}
+                </li>
+                {% endfor %}
+            </ul>
+
+            <p>Please restock these items at your earliest convenience.</p>
+
+            <a href="#" class="button-primary">Restock Products</a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Thank you for your attention!</p>
+            <p>&copy; {{ current_year }} Your Company Name. All rights reserved.</p>
+        </div>
+    </div>
+
+</body>
+</html>

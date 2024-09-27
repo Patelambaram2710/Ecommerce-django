@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+<div class="container mt-4">
+    <h1 class="text-center mb-5">Your Cart</h1>
+    {% if cart_items %}
+    <div class="row">
+        {% for item in cart_items %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                {% if item.product.image %}
+                    <a href="{% url 'product_detail' item.product.id %}">
+                        <img src="{{ item.product.image }}" class="card-img-top" alt="{{ item.product.name }}">
+                    </a>
+                {% else %}
+                    <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="No Image Available">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title text-center">{{ item.product.name }}</h5>
+                    <p class="card-text">
+                        <strong>Company:</strong> {{ item.product.company_name }}<br>
+                       <!-- Add a data attribute for available quantity -->
+                        <strong>Quantity:</strong> 
+                        <div class="input-group quantity-control">
+                            <a href="{% url 'decrease' item.id %}"> <button class="btn btn-outline-secondary btn-sm" type="button" onclick="decreaseQuantity('{{ item.id }}')">-</button></a>
+                            <input type="text" id="quantity-{{ item.id }}" class="form-control text-center" value="{{ item.quantity }}" readonly>
+                            <a href="{% url 'increase' item.id %}"><button class="btn btn-outline-secondary btn-sm" type="button" onclick="increaseQuantity('{{ item.id }}', {{ item.product.quantity }})">+</button></a>
+                            {% comment %} <button class="btn btn-outline-secondary btn-sm" type="button" onclick="decreaseQuantity('{{ item.id }}')">-</button> {% endcomment %}
+                            {% comment %} <input type="text" id="quantity-{{ item.id }}" class="form-control text-center" value="{{ item.quantity }}" readonly> {% endcomment %}
+                            {% comment %} <button class="btn btn-outline-secondary btn-sm" type="button" onclick="increaseQuantity('{{ item.id }}', {{ item.product.quantity }})">+</button> {% endcomment %}
+                        </div>
+                        
+                        </div>
+                        <strong>Price:</strong> ₹{{ item.product.price }}<br>
+                    </p>
+                    <div class="text-center">
+                        <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm" onclick="handleRemoveClick(event, '{{ item.product.name }}')">
+                            Remove
+                        </a>
+                        <a href="{% url 'place_order' item.id %}"
+                                class="btn btn-dark rounded-pill py-2 btn-block">place_order</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center">
+        <p>Your cart is empty.</p>
+        <a href="{% url 'index' %}" class="btn btn-primary">Go to Product List</a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Custom Notification -->
+<div id="customNotification" class="notification">
+    <div class="notification-icon">
+        <i class="fas fa-check"></i>
+    </div>
+    <p id="notificationMessage"></p>
+</div>
+
+<style>
+    .quantity-control {
+        max-width: 120px;
+        margin: 0 auto 10px auto;
+    }
+    .notification {
+        position: fixed;
+        bottom: 20px; /* Position from the bottom */
+        left: 50%; /* Center horizontally */
+        transform: translateX(-50%); /* Center horizontally */
+        background-color: #fff;
+        color: #333;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transform: translateY(100%) translateX(-50%);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        z-index: 1050; /* Make sure it appears above other content */
+        display: flex;
+        align-items: center;
+    }
+    .notification.show {
+        opacity: 1;
+        transform: translateY(0) translateX(-50%);
+    }
+    .notification-icon {
+        background-color: #4caf50; /* Green background */
+        color: white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+    }
+    .notification-icon i {
+        font-size: 20px;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function handleRemoveClick(event, productName) {
+        event.preventDefault(); // Prevent the default action
+
+        // Display notification
+        const notification = document.getElementById('customNotification');
+        const notificationMessage = document.getElementById('notificationMessage');
+        notificationMessage.textContent = `Product "${productName}" removed from your cart.`;
+        notification.classList.add('show');
+
+        // Automatically hide the notification after 3 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 1000);
+
+        // Redirect to the remove URL after hiding the notification
+        setTimeout(() => {
+            window.location.href = event.target.getAttribute('href');
+        }, 1000);
+    }
+
+   function handleRemoveClick(event, productName) {
+    event.preventDefault(); // Prevent the default action
+
+    // Display notification
+    showNotification(`Product "${productName}" removed from your cart.`);
+
+    // Redirect to the remove URL after hiding the notification
+    setTimeout(() => {
+        window.location.href = event.target.getAttribute('href');
+    }, 1000);
+}
+
+function increaseQuantity(itemId, availableQuantity) {
+    const quantityInput = document.getElementById(`quantity-${itemId}`);
+    let quantity = parseInt(quantityInput.value);
+
+    // Check if the current quantity is less than the available stock
+    if (quantity < availableQuantity) {
+        quantityInput.value = quantity + 1;
+        showNotification("Quantity increased");
+    } else {
+        showNotification("Cannot add more, available stock limit reached.");
+    }
+}
+
+
+function decreaseQuantity(itemId) {
+    const quantityInput = document.getElementById(`quantity-${itemId}`);
+    let quantity = parseInt(quantityInput.value);
+    if (quantity > 1) {
+        quantityInput.value = quantity - 1;
+        showNotification("Quantity decreased");
+    }
+}
+
+
+
+function showNotification(message) {
+    const notification = document.getElementById('customNotification');
+    const notificationMessage = document.getElementById('notificationMessage');
+    notificationMessage.textContent = message;
+    notification.classList.add('show');
+
+    // Automatically hide the notification after 2 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 2000);
+}
+
+</script>
+
+{% endblock body %}
